@@ -12,7 +12,6 @@ public class BombCodeInput : MonoBehaviour
     {
         correctCode = bombCode.BombCombo();
     }
-
     public void SubmitGuess()
     {
         string bombCodeInput = inputField.text;
