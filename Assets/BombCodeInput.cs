@@ -26,7 +26,7 @@ public class BombCodeInput : MonoBehaviour
                 Debug.Log("Incorrect Code! Try again.");
                 inputField.text = string.Empty;
             }
-        }
+        } 
         else
         {
             Debug.Log("Invalid Input! Remember, it must be a 4-digit number.");
