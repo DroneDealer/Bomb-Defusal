@@ -52,14 +52,16 @@ public class BombCodeInput : MonoBehaviour
                 guessMatch[i] = true; // Matched in user input
             }
         }
-
         // Check for number matches (wrong place, correct digit) next
         for (int i = 0; i < 4; i++)
         {
             if (guessMatch[i]) continue; // Skip already matched digits
             for (int j = 0; j < 4; j++)
             {
-                if (bombCodeMatch[j]) continue;
+                if (bombCodeMatch[j])
+                {
+                    continue; // Skip exactly matched digits in bomb code
+                }
                 if (userInput[i] == bombCode[j])
                 {
                     numberMatch++;
