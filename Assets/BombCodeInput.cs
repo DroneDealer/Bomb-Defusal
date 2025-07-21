@@ -10,20 +10,23 @@ public class BombCodeInput : MonoBehaviour
 
     private void Start()
     {
-        correctCode = bombCode.BombCombo();
+        correctCode = bombCode.GetCode();
+        feedbackText.text = "Waiting for your guess...";
     }
     public void SubmitGuess()
     {
         string bombCodeInput = inputField.text;
+        feedbackText.text = "You clicked the button!";
         if (bombCodeInput.Length == 4 && int.TryParse(bombCodeInput, out _))
         {
             if (bombCodeInput == correctCode)
             {
-                Debug.Log("Correct Code! Bomb defused!");
+                feedbackText.text = "Correct Code! Bomb defused!";
             }
             else
             {
-                Debug.Log("Incorrect Code! Try again.");
+                string feedback = GenerateFeedback(correctCode, bombCodeInput);
+                feedbackText.text = $"Incorrect Code!\n{feedback}";
                 inputField.text = string.Empty;
             }
         }
