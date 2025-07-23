@@ -7,25 +7,44 @@ public class BombCodeInput : MonoBehaviour
     public BombCode bombCode;
     public TMP_Text feedbackText;
     private string correctCode;
+    public GameObject MatchCount;
+    public Transform PINFeedback;
 
     private void Start()
     {
         correctCode = bombCode.GetCode();
-        feedbackText.text = "Waiting for your guess...";
+        // feedbackText.text = "Waiting for your guess...";
     }
     public void SubmitGuess()
     {
         string bombCodeInput = inputField.text;
-        feedbackText.text = "You clicked the button!";
+        // feedbackText.text = "You clicked the button!";
         if (bombCodeInput.Length == 4 && int.TryParse(bombCodeInput, out _))
         {
             if (bombCodeInput == correctCode)
             {
-                feedbackText.text = "Correct Code! Bomb defused!";
+                feedbackText.text = "BOMB DEFUSED";
             }
             else
             {
-                string feedback = GenerateFeedback(correctCode, bombCodeInput);
+                string feedback = GenerateFeedback(correctCode, bombCodeInput, out int exactMatch, out int numberMatch);
+                GameObject guessEntry = Instantiate(MatchCount, PINFeedback);
+                TMP_Text[] texts = guessEntry.GetComponentsInChildren<TMP_Text>();
+                foreach (TMP_Text text in texts)
+                {
+                    if (text.name == "GuessText")
+                    {
+                        text.text = "Guess: " + bombCodeInput;
+                    }
+                    else if (text.name == "GreenNumber")
+                    {
+                        text.text = ": " + exactMatch.ToString();
+                    }
+                    else if (text.name == "YellowNumber")
+                    {
+                        text.text = ": " + numberMatch.ToString();
+                    }
+                }
                 feedbackText.text = $"Incorrect Code!\n{feedback}";
                 inputField.text = string.Empty;
             }
@@ -36,10 +55,10 @@ public class BombCodeInput : MonoBehaviour
             inputField.text = string.Empty;
         }
     }
-    private string GenerateFeedback(string bombCode, string userInput)
+    private string GenerateFeedback(string bombCode, string userInput, out int exactMatch, out int numberMatch)
     {
-        int exactMatch = 0; // correct place, correct digit
-        int numberMatch = 0; // wrong place, correct digit
+        exactMatch = 0; // correct place, correct digit
+        numberMatch = 0; // wrong place, correct digit
         bool[] bombCodeMatch = new bool[4]; // Digits matched in bomb code
         bool[] guessMatch = new bool[4]; // Digits matched in user input
                                          // Need both to keep track of digit duplicates
