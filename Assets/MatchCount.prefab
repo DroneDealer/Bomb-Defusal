@@ -568,7 +568,7 @@ GameObject:
   - component: {fileID: 6843104765691065805}
   m_Layer: 5
   m_Name: MatchCount
-  m_TagString: Untagged
+  m_TagString: Guesses
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -9,11 +9,14 @@ public class BombCodeInput : MonoBehaviour
     private string correctCode;
     public GameObject MatchCount;
     public Transform PINFeedback;
+    private int entryCount = 0;
+    private float entryOffset = 50f; // Space between entries
 
     private void Start()
     {
         correctCode = bombCode.GetCode();
         // feedbackText.text = "Waiting for your guess...";
+        feedbackText.gameObject.SetActive(false);
     }
     public void SubmitGuess()
     {
@@ -21,14 +24,27 @@ public class BombCodeInput : MonoBehaviour
         // feedbackText.text = "You clicked the button!";
         if (bombCodeInput.Length == 4 && int.TryParse(bombCodeInput, out _))
         {
+            Debug.Log("Checking input: " + bombCodeInput + " vs code: " + correctCode);
+            MatchCount.gameObject.SetActive(true);
             if (bombCodeInput == correctCode)
             {
+                foreach (Transform child in PINFeedback)
+                {
+                    if (child.gameObject.CompareTag("Guesses"))
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+                feedbackText.gameObject.SetActive(true);
                 feedbackText.text = "BOMB DEFUSED";
+                // Add "number of guesses: xxx"
             }
             else
             {
-                string feedback = GenerateFeedback(correctCode, bombCodeInput, out int exactMatch, out int numberMatch);
+                GenerateFeedback(correctCode, bombCodeInput, out int exactMatch, out int numberMatch);
                 GameObject guessEntry = Instantiate(MatchCount, PINFeedback);
+                guessEntry.transform.localPosition = new Vector3(0, -entryOffset * entryCount, 0);
+                entryCount++;
                 TMP_Text[] texts = guessEntry.GetComponentsInChildren<TMP_Text>();
                 foreach (TMP_Text text in texts)
                 {
@@ -45,13 +61,14 @@ public class BombCodeInput : MonoBehaviour
                         text.text = ": " + numberMatch.ToString();
                     }
                 }
-                feedbackText.text = $"Incorrect Code!\n{feedback}";
+                // feedbackText.text = $"Incorrect Code!\n{feedback}";
                 inputField.text = string.Empty;
             }
         }
         else
         {
             Debug.Log("Invalid Input! Remember, it must be a 4-digit number.");
+            feedbackText.text = "ERROR: INVALID INPUT. ONLY ACCEPTS 4 DIGIT NUMBERS.";
             inputField.text = string.Empty;
         }
     }
