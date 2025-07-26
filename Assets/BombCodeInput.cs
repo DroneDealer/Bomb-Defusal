@@ -10,16 +10,11 @@ public class BombCodeInput : MonoBehaviour
     public GameObject MatchCount;
     public Transform PINFeedbackScroll;
     private int entryCount = 0;
-    private float height = 100f;
-    private float entryOffset = 1f; // Space between entries
-
     private void Start()
     {
         correctCode = bombCode.GetCode();
         // feedbackText.text = "Waiting for your guess...";
         feedbackText.gameObject.SetActive(false);
-        RectTransform contentRect = PINFeedbackScroll.GetComponent<RectTransform>();
-        contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, 300f);
     }
     public void SubmitGuess()
     {
@@ -46,15 +41,6 @@ public class BombCodeInput : MonoBehaviour
             {
                 GenerateFeedback(correctCode, bombCodeInput, out int exactMatch, out int numberMatch);
                 GameObject guessEntry = Instantiate(MatchCount, PINFeedbackScroll, false);
-                float entryHeight = height + entryOffset;
-                float newYPos = -entryCount * entryHeight;
-                guessEntry.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, newYPos);
-                RectTransform contentRect = PINFeedbackScroll.GetComponent<RectTransform>();
-                float requiredHeight = (entryCount + 1) * entryHeight;
-                if (requiredHeight > contentRect.sizeDelta.y)
-                {
-                    contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, requiredHeight);
-                }
                 entryCount++;
                 TMP_Text[] texts = guessEntry.GetComponentsInChildren<TMP_Text>();
                 foreach (TMP_Text text in texts)
@@ -73,8 +59,6 @@ public class BombCodeInput : MonoBehaviour
                     }
                 }
                 // feedbackText.text = $"Incorrect Code!\n{feedback}";
-                // float newHeight = entryCount * (height + entryOffset);
-                // PINFeedbackScroll.sizeDelta = new Vector2(PINFeedbackScroll.sizeDelta.x, newHeight);
                 inputField.text = string.Empty;
             }
         }
