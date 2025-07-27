@@ -10,11 +10,16 @@ public class BombCodeInput : MonoBehaviour
     public GameObject MatchCount;
     public Transform PINFeedbackScroll;
     private int entryCount = 0;
+    private int CurrentLives;
+    public int MaxLives;
+    public TMP_Text livesText;
     private void Start()
     {
         correctCode = bombCode.GetCode();
         // feedbackText.text = "Waiting for your guess...";
         feedbackText.gameObject.SetActive(false);
+        CurrentLives = MaxLives;
+        livesText.text = "Lives: " + CurrentLives;
     }
     public void SubmitGuess()
     {
@@ -60,6 +65,22 @@ public class BombCodeInput : MonoBehaviour
                 }
                 // feedbackText.text = $"Incorrect Code!\n{feedback}";
                 inputField.text = string.Empty;
+                CurrentLives--;
+                livesText.text = "Lives: " + CurrentLives;
+                if (CurrentLives <= 0)
+                {
+                    // Add audio cues here to indicate loss
+                    feedbackText.gameObject.SetActive(true);
+                    feedbackText.text = "ERROR: TOO MANY FAILED ATTEMPTS - BOMB DETONATED";
+                    inputField.interactable = false;
+                    return;
+                    Debug.Log("Game Over! You ran out of lives.");
+                }
+                else
+                {
+                    feedbackText.gameObject.SetActive(true);
+                    feedbackText.text = GenerateFeedback(correctCode, bombCodeInput, out exactMatch, out numberMatch);
+                }
             }
         }
         else
