@@ -14,7 +14,7 @@ public class WireCutCode : MonoBehaviour
     {
         for (int i = 0; i < wireButtons.Length; i++)
         {
-            int index = i; // Capture the current index
+            int index = i;
             wireButtons[i].onClick.AddListener(() => CutWire(index));
             // PLEASE REMEMBER THIS TIME: ADDLISTENER ENSURES YOU DO NOT HAVE TO ASSIGN THE BUTTONS IN THE INSPECTOR
         }
@@ -46,7 +46,6 @@ public class WireCutCode : MonoBehaviour
             if (currentStep >= simonSequence.Count)
             {
                 feedbackText.text = "SEQUENCE COMPLETE: WIRES CUT";
-                // Logic for completing the wire cutting task
             }
         }
         else
