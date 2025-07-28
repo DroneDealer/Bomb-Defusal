@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class BombCodeInput : MonoBehaviour
 {
@@ -13,13 +14,14 @@ public class BombCodeInput : MonoBehaviour
     private int CurrentLives;
     public int MaxLives;
     public TMP_Text livesText;
+    public Button submitButton;
     private void Start()
     {
         correctCode = bombCode.GetCode();
         // feedbackText.text = "Waiting for your guess...";
         feedbackText.gameObject.SetActive(false);
         CurrentLives = MaxLives;
-        livesText.text = "Lives: " + CurrentLives;
+        livesText.text = "Guesses left: " + CurrentLives;
     }
     public void SubmitGuess()
     {
@@ -66,20 +68,24 @@ public class BombCodeInput : MonoBehaviour
                 // feedbackText.text = $"Incorrect Code!\n{feedback}";
                 inputField.text = string.Empty;
                 CurrentLives--;
-                livesText.text = "Lives: " + CurrentLives;
+                livesText.text = "Guesses left: " + CurrentLives;
                 if (CurrentLives <= 0)
                 {
+                    inputField.interactable = false;
                     // Add audio cues here to indicate loss
+                    foreach (Transform child in PINFeedbackScroll)
+                    {
+                        if (child.CompareTag("Guesses"))
+                        {
+                            Destroy(child.gameObject);
+                        }
+                    }
                     feedbackText.gameObject.SetActive(true);
                     feedbackText.text = "ERROR: TOO MANY FAILED ATTEMPTS - BOMB DETONATED";
                     inputField.interactable = false;
-                    return;
+                    submitButton.interactable = false;
                     Debug.Log("Game Over! You ran out of lives.");
-                }
-                else
-                {
-                    feedbackText.gameObject.SetActive(true);
-                    feedbackText.text = GenerateFeedback(correctCode, bombCodeInput, out exactMatch, out numberMatch);
+                    return;
                 }
             }
         }
