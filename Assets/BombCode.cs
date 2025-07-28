@@ -18,7 +18,7 @@ public class BombCode : MonoBehaviour
         bombCode = string.Join("", digits);
     }
     public string GetCode() 
-    //Need this so that I can access the bomb code from BombCodeInput. I could have made BombCombo public, but this is cleaner + safer
+    // Need this so that I can access the bomb code from BombCodeInput. I could have made BombCombo public, but this is cleaner + safer
     {
         return bombCode;
     }
