@@ -5,6 +5,7 @@ using System.Collections;
 
 public class SimonSaysButton : MonoBehaviour
 {
+    public Image ToBeTinted;
     public GameObject glowEffect;
     private int buttonID;
     private Action<int> callback;
@@ -24,6 +25,11 @@ public class SimonSaysButton : MonoBehaviour
         GetComponent<Button>().interactable = false;
         yield return new WaitForSeconds(0.5f);
         glowEffect?.SetActive(false);
-        callback?.Invoke(buttonID); // reports the button press
+        GetComponent<Button>().interactable = true;
+        callback?.Invoke(buttonID);
+    }
+    public Color GetColor()
+    {
+        return ToBeTinted.color;
     }
 }
