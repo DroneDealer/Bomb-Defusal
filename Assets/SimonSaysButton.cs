@@ -13,7 +13,8 @@ public class SimonSaysButton : MonoBehaviour
     {
         buttonID = id;
         callback = onPressed;
-        GetComponent<Button>().onClick.AddListener(SimonSays);
+        // GetComponent<Button>().onClick.AddListener(SimonSays);
+        // I AM SO STUPID I HAVE MADE THIS MISTAKE BEFORE. ANIKA STOP ASSIGNING THE BUTTONS WHILE SIMULTANEOUSLY USING ADDLISTENER
     }
     public void SimonSays()
     {
@@ -21,11 +22,12 @@ public class SimonSaysButton : MonoBehaviour
     }
     private IEnumerator SimonSaysButtonClicked()
     {
+        Debug.Log($"SimonSaysButtonClicked on ID: {buttonID} — object name: {gameObject.name}");
         glowEffect?.SetActive(true);
-        GetComponent<Button>().interactable = false;
+        // GetComponent<Button>().interactable = false;
         yield return new WaitForSeconds(0.5f);
         glowEffect?.SetActive(false);
-        GetComponent<Button>().interactable = true;
+        // GetComponent<Button>().interactable = true;
         callback?.Invoke(buttonID);
     }
     public Color GetColor()
