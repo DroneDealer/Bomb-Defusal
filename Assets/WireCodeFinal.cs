@@ -13,7 +13,7 @@ public class WireCodeFinal : MonoBehaviour
     [SerializeField] private Image yellowZoneImage;
     [SerializeField] private Image greenZoneImage;
     [SerializeField] private TMP_Text feedbackText;
-    [SerializeField] private float pulseSpeed = 75f;
+    [SerializeField] private float pulseSpeed = 50f;
     private bool movingRight = true;
     private bool isActive = false;
     private enum ZoneColor { Red, Yellow, Green }
@@ -122,6 +122,7 @@ public class WireCodeFinal : MonoBehaviour
                 currentRound = 1;
                 feedbackText.text = "ERROR: WIRE CUT INCORRECTLY";
                 ShowPlayButton();
+                isActive = false;
                 return;
             }
         }
@@ -130,7 +131,7 @@ public class WireCodeFinal : MonoBehaviour
     {
         int colorIndex = Random.Range(0, 3);
         currentTarget = (ZoneColor)colorIndex;
-        pulseSpeed = 300f * (1f + 0.15f * (currentRound - 1));
+        pulseSpeed = 150f * (1f + 0.5f * (currentRound - 1));
 
         switch (currentTarget)
         {
