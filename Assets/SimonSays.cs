@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class SimonSays : MonoBehaviour
 {
@@ -13,13 +14,24 @@ public class SimonSays : MonoBehaviour
     private bool PlayerMove = false;
     [SerializeField] private TMP_Text feedbackText;
     [SerializeField] private TMP_Text levelText;
+    [SerializeField] private Button playButton;
     private int currentLevel = 1;
+    public int maxLevels = 10;
+    private bool HasWon = false;
     void Start()
     {
         for (int i = 0; i < PlayerButtons.Count; i++)
         {
             PlayerButtons[i].Setup(i, OnButtonPressed);
         }
+    }
+    public void StartGame()
+    {
+        if (HasWon)
+        {
+            return;
+        }
+        playButton.gameObject.SetActive(false);
         StartCoroutine(RestartGame());
     }
     void OnButtonPressed(int id)
@@ -36,7 +48,7 @@ public class SimonSays : MonoBehaviour
             currentStep++;
             if (currentStep >= randomSequence.Count)
             {
-                Debug.Log("Sequence complete! Moving to level " + (currentLevel + 1));
+                Debug.Log("Sequence complete! Moving to level " + (currentLevel + 1) + " / 10");
                 feedbackText.text = "DEFENSE BREACHED. INCREASING DIFFICULTY.";
                 SetAllButtonsInteractable(false);
                 StartCoroutine(NextRound());
@@ -47,7 +59,17 @@ public class SimonSays : MonoBehaviour
             Debug.LogError("WRONG INPUT! Expected " + randomSequence[currentStep] + ", but got " + id);
             feedbackText.text = "ERROR: INCORRECT SEQUENCE ENTERED.";
             SetAllButtonsInteractable(false);
-            StartCoroutine(RestartGame());
+            bool gameOver = LivesManager.Instance.LoseLife();
+            if (gameOver)
+            {
+                feedbackText.text = "ERROR: OUT OF ATTEMPTS. BOMB DETONATINC...";
+                return;
+            }
+            else
+            {
+                ShowPlayButton();
+                return;
+            }
         }
     }
     void GenerateRandomSequennce(int length)
@@ -84,8 +106,15 @@ public class SimonSays : MonoBehaviour
     IEnumerator NextRound()
     {
         PlayerMove = false;
+        if (currentLevel >= maxLevels)
+        {
+            feedbackText.text = "ALL MEMORY SEQUENCES COMPLETED";
+            SetAllButtonsInteractable(false);
+            HasWon = true;
+            yield break;
+        }
         currentLevel++;
-        UpdateLevelText(); 
+        UpdateLevelText();
         yield return new WaitForSeconds(1f);
         GenerateRandomSequennce(currentLevel);
         yield return PlaySequence();
@@ -109,5 +138,10 @@ public class SimonSays : MonoBehaviour
         {
             button.GetComponent<UnityEngine.UI.Button>().interactable = interactable;
         }
+    }
+    public void ShowPlayButton()
+    {
+        playButton.gameObject.SetActive(true);
+        feedbackText.text = "Press PLAY to begin another sequence";
     }
 }

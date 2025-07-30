@@ -1,32 +1,25 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-
 public class BombCodeInput : MonoBehaviour
 {
     public TMP_InputField inputField;
     public BombCode bombCode;
     public TMP_Text feedbackText;
-    private string correctCode;
     public GameObject MatchCount;
     public Transform PINFeedbackScroll;
-    private int entryCount = 0;
-    private int CurrentLives;
-    public int MaxLives;
-    public TMP_Text livesText;
+     public TMP_Text livesText;
     public Button submitButton;
+    private string correctCode;
+    private int entryCount = 0;
     private void Start()
     {
         correctCode = bombCode.GetCode();
-        // feedbackText.text = "Waiting for your guess...";
         feedbackText.gameObject.SetActive(false);
-        CurrentLives = MaxLives;
-        livesText.text = "Guesses left: " + CurrentLives;
     }
     public void SubmitGuess()
     {
         string bombCodeInput = inputField.text;
-        // feedbackText.text = "You clicked the button!";
         if (bombCodeInput.Length == 4 && int.TryParse(bombCodeInput, out _))
         {
             Debug.Log("Checking input: " + bombCodeInput + " vs code: " + correctCode);
@@ -42,7 +35,6 @@ public class BombCodeInput : MonoBehaviour
                 }
                 feedbackText.gameObject.SetActive(true);
                 feedbackText.text = "BOMB DEFUSED";
-                // Add "number of guesses: xxx"
             }
             else
             {
@@ -65,14 +57,13 @@ public class BombCodeInput : MonoBehaviour
                         text.text = ": " + numberMatch.ToString();
                     }
                 }
-                // feedbackText.text = $"Incorrect Code!\n{feedback}";
                 inputField.text = string.Empty;
-                CurrentLives--;
-                livesText.text = "Guesses left: " + CurrentLives;
-                if (CurrentLives <= 0)
+                bool gameOver = LivesManager.Instance.LoseLife();
+                livesText.text = "Attempts left: " + LivesManager.Instance.CurrentLives;
+                if (gameOver)
                 {
                     inputField.interactable = false;
-                    // Add audio cues here to indicate loss
+                    submitButton.interactable = false;
                     foreach (Transform child in PINFeedbackScroll)
                     {
                         if (child.CompareTag("Guesses"))
@@ -82,8 +73,6 @@ public class BombCodeInput : MonoBehaviour
                     }
                     feedbackText.gameObject.SetActive(true);
                     feedbackText.text = "ERROR: TOO MANY FAILED ATTEMPTS - BOMB DETONATED";
-                    inputField.interactable = false;
-                    submitButton.interactable = false;
                     Debug.Log("Game Over! You ran out of lives.");
                     return;
                 }
@@ -98,42 +87,34 @@ public class BombCodeInput : MonoBehaviour
     }
     private string GenerateFeedback(string bombCode, string userInput, out int exactMatch, out int numberMatch)
     {
-        exactMatch = 0; // correct place, correct digit
-        numberMatch = 0; // wrong place, correct digit
-        bool[] bombCodeMatch = new bool[4]; // Digits matched in bomb code
-        bool[] guessMatch = new bool[4]; // Digits matched in user input
-                                         // Need both to keep track of digit duplicates
-
-        // Check for exact matches first
+        exactMatch = 0;
+        numberMatch = 0;
+        bool[] bombCodeMatch = new bool[4];
+        bool[] guessMatch = new bool[4];
         for (int i = 0; i < 4; i++)
         {
             if (userInput[i] == bombCode[i])
             {
                 exactMatch++;
-                bombCodeMatch[i] = true; // Matched in bomb code
-                guessMatch[i] = true; // Matched in user input
+                bombCodeMatch[i] = true;
+                guessMatch[i] = true;
             }
         }
-        // Check for number matches (wrong place, correct digit) next
         for (int i = 0; i < 4; i++)
         {
-            if (guessMatch[i]) continue; // Skip already matched digits
+            if (guessMatch[i]) continue;
             for (int j = 0; j < 4; j++)
             {
-                if (bombCodeMatch[j])
-                {
-                    continue; // Skip exactly matched digits in bomb code
-                }
+                if (bombCodeMatch[j]) continue;
                 if (userInput[i] == bombCode[j])
                 {
                     numberMatch++;
-                    bombCodeMatch[j] = true; // Matched in bomb code
-                    guessMatch[i] = true; // Matched in user input
-                    break; // Stop searching for this digit
+                    bombCodeMatch[j] = true;
+                    guessMatch[i] = true;
+                    break;
                 }
             }
         }
         return $"Right number & spot: {exactMatch}\nRight number, wrong spot: {numberMatch}";
-        // Coding for dupe digits is so hard bro
     }
 }
