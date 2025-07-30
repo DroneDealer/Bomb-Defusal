@@ -19,7 +19,6 @@ public class BombCodeInput : MonoBehaviour
     public AudioClip success;
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         correctCode = bombCode.GetCode();
         feedbackText.gameObject.SetActive(false);
     }

@@ -20,19 +20,24 @@ public class WireCodeFinal : MonoBehaviour
     private ZoneColor currentTarget;
     private int currentRound = 1;
     public int maxRounds = 5;
+    private bool HasWon = false;
 
     [Header("Audio")]
     public AudioSource audioSource;
     [SerializeField] private AudioClip wireSnip;
     [SerializeField] private AudioClip success;
     [SerializeField] private AudioClip fail;
-    private readonly Color activeRed = Color.red;
-    private readonly Color activeYellow = Color.yellow;
-    private readonly Color activeGreen = Color.green;
-
-    void Start()
+    public Button playButton;
+    private readonly Color activeRed = new Color(1f, 0.2f, 0.2f);
+    private readonly Color activeYellow = new Color(1f, 0.8f, 0.2f);
+    private readonly Color activeGreen = new Color(0.2f, 1f, 0.2f);
+    public void StartGame()
     {
-        audioSource = GetComponent<AudioSource>();
+        if (HasWon)
+        {
+            return;
+        }
+        playButton.gameObject.SetActive(false);
         NewTargetZone();
     }
     void Update()
@@ -64,6 +69,10 @@ public class WireCodeFinal : MonoBehaviour
     }
     void CheckPulse()
     {
+        if (HasWon)
+        {
+            return;
+        }
         audioSource.PlayOneShot(wireSnip);
 
         float pulseX = pulse.anchoredPosition.x;
@@ -85,10 +94,11 @@ public class WireCodeFinal : MonoBehaviour
             isActive = false;
             Debug.Log("Wire cut successfully!");
             currentRound++;
-            if(currentRound > maxRounds)
+            if (currentRound > maxRounds)
             {
-                feedbackText.text = "ALL WIRES CUT. DISARMING BOMB...";
-                feedbackText.color = Color.green;
+                feedbackText.text = "ALL WIRES CUT. DISARMING...";
+                isActive = false;
+                HasWon = true;
             }
             else
             {
@@ -108,8 +118,9 @@ public class WireCodeFinal : MonoBehaviour
             }
             else
             {
+                currentRound = 1;
                 feedbackText.text = "ERROR: WIRE CUT INCORRECTLY";
-                Debug.Log("Wire cut failed! Try again.");
+                ShowPlayButton();
                 return;
             }
         }
@@ -118,6 +129,7 @@ public class WireCodeFinal : MonoBehaviour
     {
         int colorIndex = Random.Range(0, 3);
         currentTarget = (ZoneColor)colorIndex;
+        pulseSpeed = 300f * (1f + 0.15f * (currentRound - 1));
 
         switch (currentTarget)
         {
@@ -136,4 +148,19 @@ public class WireCodeFinal : MonoBehaviour
         }
         isActive = true;
     }
+    public void RestartGame()
+    {
+        playButton.gameObject.SetActive(false);
+        currentRound = 1;
+        HasWon = false;
+        isActive = false;
+        pulse.anchoredPosition = Vector2.zero;
+        feedbackText.text = "REINITIALIZING...";
+        NewTargetZone();
+    }
+        public void ShowPlayButton()
+        {
+            playButton.gameObject.SetActive(true);
+            feedbackText.text = "Press PLAY to attempt again";
+        }
 }

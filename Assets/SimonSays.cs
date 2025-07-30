@@ -20,12 +20,10 @@ public class SimonSays : MonoBehaviour
     private bool HasWon = false;
     [Header("Audio")]
     public AudioSource audioSource;
-    public AudioClip buttonPressSound;
     public AudioClip success;
     public AudioClip fail;
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         for (int i = 0; i < PlayerButtons.Count; i++)
         {
             PlayerButtons[i].Setup(i, OnButtonPressed);
@@ -42,7 +40,6 @@ public class SimonSays : MonoBehaviour
     }
     void OnButtonPressed(int id)
     {
-        audioSource.PlayOneShot(buttonPressSound);
         Debug.Log("OnButtonPressed called: ID = " + id + ", PlayerMove = " + PlayerMove + ", currentStep = " + currentStep + ", randomSequence.Count = " + randomSequence.Count);
         Debug.Log($"Button {id} pressed");
         if (currentStep >= randomSequence.Count)

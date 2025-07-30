@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 public class Countdown : MonoBehaviour
 {
-    public float startTime = 600f;
+    public float startTime = 420f;
     public float currentTime;
     public TMP_Text countdownText;
     private bool timerRunning = true;

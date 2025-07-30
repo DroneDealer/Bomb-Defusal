@@ -9,6 +9,8 @@ public class SimonSaysButton : MonoBehaviour
     public GameObject glowEffect;
     private int buttonID;
     private Action<int> callback;
+    public AudioSource audioSource;
+    public AudioClip buttonPressSound;
     public void Setup(int id, Action<int> onPressed)
     {
         buttonID = id;
@@ -22,6 +24,7 @@ public class SimonSaysButton : MonoBehaviour
     }
     private IEnumerator SimonSaysButtonClicked()
     {
+        audioSource.PlayOneShot(buttonPressSound);
         Debug.Log($"SimonSaysButtonClicked on ID: {buttonID} — object name: {gameObject.name}");
         glowEffect?.SetActive(true);
         // GetComponent<Button>().interactable = false;
