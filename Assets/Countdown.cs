@@ -6,6 +6,9 @@ public class Countdown : MonoBehaviour
     public float currentTime;
     public TMP_Text countdownText;
     private bool timerRunning = true;
+    public AudioSource audioSource;
+    public AudioClip explosion;
+    public GameObject gameOverCanvas;
     private void Start()
     {
         currentTime = startTime;
@@ -34,6 +37,8 @@ public class Countdown : MonoBehaviour
     private void TimerEnded()
     {
         Debug.Log("Out of time");
-        // add more logic later
+        audioSource.PlayOneShot(explosion);
+        gameOverCanvas.SetActive(true);
+        Time.timeScale = 0f;
     }
 }

@@ -118,4 +118,4 @@ public class WireCode : MonoBehaviour
         }
     }
 }
-// Just realized
+// Just realized I have to make sure the color sections dont overlap. I cannot do this right now I'll come back to this project later

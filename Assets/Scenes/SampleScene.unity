@@ -1764,9 +1764,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c496cc8334e0cea4980722f077290b9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxLives: 12
+  MaxLives: 15
   CurrentLives: 0
   livesText: {fileID: 1047654916}
+  audioSource: {fileID: 1120748468}
+  explosion: {fileID: 8300000, guid: 769935671f26d2542a21dd6546274919, type: 3}
   gameOverCanvas: {fileID: 1759860220}
 --- !u!4 &299390381
 Transform:
@@ -9471,6 +9473,9 @@ MonoBehaviour:
   startTime: 420
   currentTime: 0
   countdownText: {fileID: 1484279324}
+  audioSource: {fileID: 1120748468}
+  explosion: {fileID: 8300000, guid: 769935671f26d2542a21dd6546274919, type: 3}
+  gameOverCanvas: {fileID: 1759860220}
 --- !u!4 &1659445374
 Transform:
   m_ObjectHideFlags: 0
