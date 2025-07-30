@@ -13,7 +13,7 @@ public class WireCodeFinal : MonoBehaviour
     [SerializeField] private Image yellowZoneImage;
     [SerializeField] private Image greenZoneImage;
     [SerializeField] private TMP_Text feedbackText;
-    [SerializeField] private float pulseSpeed = 50f;
+    [SerializeField] private float pulseSpeed = 150f;
     private bool movingRight = true;
     private bool isActive = false;
     private enum ZoneColor { Red, Yellow, Green }
