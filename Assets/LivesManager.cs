@@ -4,16 +4,16 @@ using TMPro;
 public class LivesManager : MonoBehaviour
 {
     public static LivesManager Instance;
-    public int MaxLives = 3;
+    public int MaxLives = 15;
     public int CurrentLives;
     public TMP_Text livesText;
+    public GameObject gameOverCanvas;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             CurrentLives = MaxLives;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -30,13 +30,17 @@ public class LivesManager : MonoBehaviour
         {
             return true;
         }
-
         CurrentLives--;
         UpdateLivesUI();
 
         if (CurrentLives <= 0)
         {
             Debug.Log("Game Over! No more lives.");
+            if (gameOverCanvas != null)
+            {
+                gameOverCanvas.SetActive(true);
+            }
+            Time.timeScale = 0f;
             return true;
         }
         return false;
@@ -53,4 +57,10 @@ public class LivesManager : MonoBehaviour
         CurrentLives = MaxLives;
         UpdateLivesUI();
     }
+    public void RestartGame()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+    }
+    
 }
