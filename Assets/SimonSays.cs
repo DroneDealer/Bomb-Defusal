@@ -115,6 +115,7 @@ public class SimonSays : MonoBehaviour
         if (currentLevel >= maxLevels)
         {
             feedbackText.text = "ALL MEMORY SEQUENCES COMPLETED";
+            WinTrack.Instance.minigameCompleted();
             SetAllButtonsInteractable(false);
             HasWon = true;
             yield break;

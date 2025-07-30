@@ -33,6 +33,7 @@ public class BombCodeInput : MonoBehaviour
             if (bombCodeInput == correctCode)
             {
                 audioSource.PlayOneShot(success);
+                WinTrack.Instance.minigameCompleted();
                 foreach (Transform child in PINFeedbackScroll)
                 {
                     if (child.gameObject.CompareTag("Guesses"))

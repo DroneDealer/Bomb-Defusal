@@ -13,7 +13,7 @@ public class WireCodeFinal : MonoBehaviour
     [SerializeField] private Image yellowZoneImage;
     [SerializeField] private Image greenZoneImage;
     [SerializeField] private TMP_Text feedbackText;
-    [SerializeField] private float pulseSpeed = 300f;
+    [SerializeField] private float pulseSpeed = 150f;
     private bool movingRight = true;
     private bool isActive = false;
     private enum ZoneColor { Red, Yellow, Green }
@@ -99,6 +99,7 @@ public class WireCodeFinal : MonoBehaviour
                 feedbackText.text = "ALL WIRES CUT. DISARMING...";
                 isActive = false;
                 HasWon = true;
+                WinTrack.Instance.minigameCompleted();
             }
             else
             {
