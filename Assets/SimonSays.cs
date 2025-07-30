@@ -18,8 +18,14 @@ public class SimonSays : MonoBehaviour
     private int currentLevel = 1;
     public int maxLevels = 10;
     private bool HasWon = false;
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip buttonPressSound;
+    public AudioClip success;
+    public AudioClip fail;
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         for (int i = 0; i < PlayerButtons.Count; i++)
         {
             PlayerButtons[i].Setup(i, OnButtonPressed);
@@ -36,6 +42,7 @@ public class SimonSays : MonoBehaviour
     }
     void OnButtonPressed(int id)
     {
+        audioSource.PlayOneShot(buttonPressSound);
         Debug.Log("OnButtonPressed called: ID = " + id + ", PlayerMove = " + PlayerMove + ", currentStep = " + currentStep + ", randomSequence.Count = " + randomSequence.Count);
         Debug.Log($"Button {id} pressed");
         if (currentStep >= randomSequence.Count)
@@ -49,6 +56,7 @@ public class SimonSays : MonoBehaviour
             if (currentStep >= randomSequence.Count)
             {
                 Debug.Log("Sequence complete! Moving to level " + (currentLevel + 1) + " / 10");
+                audioSource.PlayOneShot(success);
                 feedbackText.text = "DEFENSE BREACHED. INCREASING DIFFICULTY.";
                 SetAllButtonsInteractable(false);
                 StartCoroutine(NextRound());
@@ -58,11 +66,12 @@ public class SimonSays : MonoBehaviour
         {
             Debug.LogError("WRONG INPUT! Expected " + randomSequence[currentStep] + ", but got " + id);
             feedbackText.text = "ERROR: INCORRECT SEQUENCE ENTERED.";
+            audioSource.PlayOneShot(fail);
             SetAllButtonsInteractable(false);
             bool gameOver = LivesManager.Instance.LoseLife();
             if (gameOver)
             {
-                feedbackText.text = "ERROR: OUT OF ATTEMPTS. BOMB DETONATINC...";
+                feedbackText.text = "ERROR: OUT OF ATTEMPTS. BOMB DETONATING...";
                 return;
             }
             else

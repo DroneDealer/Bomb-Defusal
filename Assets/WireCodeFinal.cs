@@ -18,6 +18,8 @@ public class WireCodeFinal : MonoBehaviour
     private bool isActive = false;
     private enum ZoneColor { Red, Yellow, Green }
     private ZoneColor currentTarget;
+    private int currentRound = 1;
+    public int maxRounds = 5;
 
     [Header("Audio")]
     public AudioSource audioSource;
@@ -30,6 +32,7 @@ public class WireCodeFinal : MonoBehaviour
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         NewTargetZone();
     }
     void Update()
@@ -65,7 +68,14 @@ public class WireCodeFinal : MonoBehaviour
 
         float pulseX = pulse.anchoredPosition.x;
 
-        RectTransform targetZone = GetCurrentTargetZone();
+        RectTransform targetZone = currentTarget switch
+        {
+            ZoneColor.Red => redZone,
+            ZoneColor.Yellow => yellowZone,
+            ZoneColor.Green => greenZone,
+            _ => null
+        };
+
         float targetMin = targetZone.anchoredPosition.x - (targetZone.rect.width / 2f);
         float targetMax = targetZone.anchoredPosition.x + (targetZone.rect.width / 2f);
 
@@ -74,21 +84,41 @@ public class WireCodeFinal : MonoBehaviour
             audioSource.PlayOneShot(success);
             isActive = false;
             Debug.Log("Wire cut successfully!");
+            currentRound++;
+            if(currentRound > maxRounds)
+            {
+                feedbackText.text = "ALL WIRES CUT. DISARMING BOMB...";
+                feedbackText.color = Color.green;
+            }
+            else
+            {
+                feedbackText.text = "ROUND " + currentRound + " COMPLETE. PROGRESSING...";
+                NewTargetZone();
+            }
         }
         else
         {
             audioSource.PlayOneShot(fail);
-            isActive = false;
-            Debug.Log("Wire cut failed! Try again.");
+            bool gameOver = LivesManager.Instance.LoseLife();
+            if (gameOver)
+            {
+                feedbackText.text = "ERROR: OUT OF ATTEMPTS. BOMB DETONATING...";
+                isActive = false;
+                return;
+            }
+            else
+            {
+                feedbackText.text = "ERROR: WIRE CUT INCORRECTLY";
+                Debug.Log("Wire cut failed! Try again.");
+                return;
+            }
         }
     }
     void NewTargetZone()
     {
         int colorIndex = Random.Range(0, 3);
         currentTarget = (ZoneColor)colorIndex;
-        redZoneImage.color = activeRed;
-        yellowZoneImage.color = activeYellow;
-        greenZoneImage.color = activeGreen;
+
         switch (currentTarget)
         {
             case ZoneColor.Red:
@@ -105,15 +135,5 @@ public class WireCodeFinal : MonoBehaviour
                 break;
         }
         isActive = true;
-    }
-    RectTransform GetCurrentTargetZone()
-    {
-        switch (currentTarget)
-        {
-            case ZoneColor.Red: return redZone;
-            case ZoneColor.Yellow: return yellowZone;
-            case ZoneColor.Green: return greenZone;
-            default: return null; // Should never happen. please don't happen.
-        }
     }
 }

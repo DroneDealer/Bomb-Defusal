@@ -12,13 +12,20 @@ public class BombCodeInput : MonoBehaviour
     public Button submitButton;
     private string correctCode;
     private int entryCount = 0;
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip typeSound;
+    public AudioClip buttonPressSound;
+    public AudioClip success;
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         correctCode = bombCode.GetCode();
         feedbackText.gameObject.SetActive(false);
     }
     public void SubmitGuess()
     {
+        audioSource.PlayOneShot(buttonPressSound);
         string bombCodeInput = inputField.text;
         if (bombCodeInput.Length == 4 && int.TryParse(bombCodeInput, out _))
         {
@@ -26,6 +33,7 @@ public class BombCodeInput : MonoBehaviour
             MatchCount.gameObject.SetActive(true);
             if (bombCodeInput == correctCode)
             {
+                audioSource.PlayOneShot(success);
                 foreach (Transform child in PINFeedbackScroll)
                 {
                     if (child.gameObject.CompareTag("Guesses"))
@@ -34,7 +42,7 @@ public class BombCodeInput : MonoBehaviour
                     }
                 }
                 feedbackText.gameObject.SetActive(true);
-                feedbackText.text = "BOMB DEFUSED";
+                feedbackText.text = "CORRECT PIN ENTERED. DEFUSING BOMB...";
             }
             else
             {
